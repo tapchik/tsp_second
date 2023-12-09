@@ -11,13 +11,4 @@ class Testing
         brchAndBnd.PrintResults();
         return true;
     }
-
-    public bool Test2()
-    {
-        BranchAndBound brchAndBnd = new BranchAndBound("input/test1.txt");
-        brchAndBnd.PrintMatrix();
-        brchAndBnd.Solve();
-        brchAndBnd.PrintResults();
-        return true;
-    }
 }

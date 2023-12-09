@@ -14,12 +14,10 @@ namespace tsp_second
                 return;
             }
 
-            if (args.Length == 1 && args[0] == "testing")
+            if (args.Length == 1 && args[0] == "test-rand")
             {
                 Testing testing = new Testing();
                 testing.TestRandomGenerate(4);
-                testing.Test2();
-                Console.WriteLine("Looks like every test ran well!\n");
                 return;
             }
 
