@@ -58,7 +58,7 @@ class BranchAndBound
                     firstNode.matrix[bestBranch.Item2, bestBranch.Item1] = int.MaxValue;
                     firstNode.s += (firstNode.secondMinRows[bestBranch.Item1] > firstNode.secondMinColumns[bestBranch.Item2]) ? firstNode.secondMinRows[bestBranch.Item1] : firstNode.secondMinColumns[bestBranch.Item2];
                     Node newNode = new Node(firstNode.n - 1, firstNode);
-                    newNode.matrix = MatrixNew(bestBranch.Item1, bestBranch.Item2, firstNode.matrix, firstNode.n);
+                    newNode.matrix = DownsizeMatrix(bestBranch.Item1, bestBranch.Item2, firstNode.matrix);
                     newNode.startP = DeleteNumberFromArray(bestBranch.Item1, firstNode.startP, firstNode.n);
                     newNode.endP = DeleteNumberFromArray(bestBranch.Item2, firstNode.endP, firstNode.n);
                     newNode.p = PNew(bestBranchPositions.Item1, bestBranchPositions.Item2, firstNode.p, this.n0);
@@ -102,26 +102,19 @@ class BranchAndBound
         return pNew;
     }
 
-    static public int[,] MatrixNew(int rowToRemove, int columnToRemove, int[,] originalArray, int originalN)
+    static public int[,] DownsizeMatrix(int rowToRemove, int columnToRemove, int[,] originalMatrix)
     {
-        int[,] result = new int[originalN-1, originalN-1];
-
-        for (int i = 0, j = 0; i < originalN; i++)
+        int len = originalMatrix.GetLength(0) - 1;
+        int[,] result = new int[len, len];
+        for (int i = 0; i < len; i++)
         {
-            if (i == rowToRemove)
-                continue;
-
-            for (int k = 0, u = 0; k < originalN; k++)
+            for (int j = 0; j < len; j++)
             {
-                if (k == columnToRemove)
-                    continue;
-
-                result[j, u] = originalArray[i, k];
-                u++;
+                int cursor_i = (i < rowToRemove) ? i : i+1;
+                int cursor_j = (j < columnToRemove) ? j : j+1;
+                result[i,j] = originalMatrix[cursor_i, cursor_j];
             }
-            j++;
         }
-
         return result;
     }
 
