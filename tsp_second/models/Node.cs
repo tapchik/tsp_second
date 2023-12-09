@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
 
 class Node
 {
@@ -28,7 +27,6 @@ class Node
         this.startP = GenerateAscendingArray(this.n);
         this.endP = GenerateAscendingArray(this.n);
         this.p = new int[this.n];
-        PrintMatrix();
     }
 
     public Node(string filePath)
@@ -41,7 +39,6 @@ class Node
         this.startP = GenerateAscendingArray(this.n);
         this.endP = GenerateAscendingArray(this.n);
         this.p = new int[this.n];
-        PrintMatrix();
     }
 
     public Node(int n, Node parent)
@@ -99,8 +96,9 @@ class Node
         return array;
     }
 
-    private void PrintMatrix()
+    public void PrintMatrix()
     {
+        Console.WriteLine("Матрица: ");
         int len = this.matrix.GetLength(0);
         for (int i = 0; i < len; i++)
         {
@@ -108,7 +106,7 @@ class Node
             {
                 int value = matrix[i,j];
                 int infinity = int.MaxValue - 3000;
-                String symbol = (value > infinity) ? "∞" : value.ToString();
+                string symbol = (value > infinity) ? "∞" : value.ToString();
                 Console.Write(symbol + "\t");
             }
             Console.WriteLine();

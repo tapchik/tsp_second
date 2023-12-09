@@ -16,12 +16,26 @@ class BranchAndBound
         this.nodes = new List<Node> { new Node(this.n0) };
     }
 
-    public BranchAndBound(String filePath)
+    public BranchAndBound(string filePath)
     {
         this.nodes = new List<Node> { new Node(filePath) };
         this.n0 = nodes[0].n;
         this.sMin = int.MaxValue;
         this.pOpt = new int[this.n0];
+    }
+
+    public void PrintMatrix()
+    {
+        this.nodes[0].PrintMatrix();
+        Console.WriteLine();
+    }
+
+    public void PrintResults()
+    {
+        for (int i = 0; i < this.pOpt.Length; i++)
+                Console.WriteLine($"Вершина {i}: {this.pOpt[i]}");
+            Console.WriteLine($"Кратчайшее расстроение: {this.sMin}");
+        Console.WriteLine();
     }
 
     public void Solve()
@@ -61,7 +75,7 @@ class BranchAndBound
                     newNode.matrix = DownsizeMatrix(bestBranch.Item1, bestBranch.Item2, firstNode.matrix);
                     newNode.startP = DeleteNumberFromArray(bestBranch.Item1, firstNode.startP, firstNode.n);
                     newNode.endP = DeleteNumberFromArray(bestBranch.Item2, firstNode.endP, firstNode.n);
-                    newNode.p = PNew(bestBranchPositions.Item1, bestBranchPositions.Item2, firstNode.p, this.n0);
+                    newNode.p = PNew(bestBranchPositions.Item1, bestBranchPositions.Item2, firstNode.p);
                     newNode.s = firstNode.s;
                     newNode.s0 = firstNode.s0;
                     nodes[0] = newNode;
@@ -91,15 +105,13 @@ class BranchAndBound
 
     //}
 
-    public int [] PNew(int row, int column, int [] pOriginal, int n)
+    public static int[] PNew(int row, int column, int[] array)
     {
-        int[] pNew = new int[n];
-        for (int i = 0; i < n; i++)
-        {
-            pNew[i] = pOriginal[i];
-        }
-        pNew[row] = column;
-        return pNew;
+        int len = array.Length;
+        int[] new_array = new int[len];
+        array.CopyTo(new_array, 0);
+        new_array[row] = column;
+        return new_array;
     }
 
     static public int[,] DownsizeMatrix(int rowToRemove, int columnToRemove, int[,] originalMatrix)
@@ -118,7 +130,7 @@ class BranchAndBound
         return result;
     }
 
-    public int[] DeleteNumberFromArray(int numberToRemove, int [] originalArray, int originalN)
+    public static int[] DeleteNumberFromArray(int numberToRemove, int[] originalArray, int originalN)
     {
         int[] newArray = new int[originalN - 1];
         int j = 0;
@@ -132,7 +144,6 @@ class BranchAndBound
         }
         return newArray;
     }
-
 
     private Tuple<int,int> ChooseBestBranch(int[,] matrix, int [] secondMinRows, int[] secondMinColumns, int n)
     {
@@ -194,7 +205,7 @@ class BranchAndBound
         //Reducing rows of matrix M
         for (int i = 0; i < n; i++)
         {
-            int min = this.MinValueInRow(ref matrix, ref s, ref s0, i);
+            int min = this.MinValueInRow(ref matrix, i);
             min = (min == int.MaxValue) ? 0 : min;
             s += min;
             s0 += min;
@@ -212,7 +223,7 @@ class BranchAndBound
         //Reducing columns of matrix M
         for (int j = 0; j < n; j++)
         {
-            int min = this.MinValueInColumn(ref matrix, ref s, ref s0, j);
+            int min = this.MinValueInColumn(ref matrix, j);
             min = (min == int.MaxValue) ? 0 : min;
             s += min;
             s0 += min;
@@ -261,7 +272,7 @@ class BranchAndBound
         return zeroColumns;
     }
 
-    public int[] SecondMinRows(int [] zeroRows, int[,] matrix, int n)
+    public int[] SecondMinRows(int[] zeroRows, int[,] matrix, int n)
     {
         int[] secondMinRows = new int[n];
         for (int i = 0; i < n; i++)
@@ -301,7 +312,7 @@ class BranchAndBound
         return secondMinColumns;
     }
 
-    private int MinValueInRow(ref int[,] matrix, ref int s, ref int s0, int row)
+    private int MinValueInRow(ref int[,] matrix, int row)
     {
         int min_value = int.MaxValue;
         //Finding minimum by current row
@@ -315,7 +326,7 @@ class BranchAndBound
         return min_value;
     }
 
-    private int MinValueInColumn(ref int[,] matrix, ref int s, ref int s0, int column)
+    private int MinValueInColumn(ref int[,] matrix, int column)
     {
         int min_value = int.MaxValue;
         //Finding minimum by current column

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Metadata.Ecma335;
 
 namespace tsp_second
 {
@@ -7,18 +8,25 @@ namespace tsp_second
     {
         static void Main(string[] args)
         {
-            BranchAndBound brchAndBnd;
-            if (args.Length > 0) // taking first argument as a filepath
-                brchAndBnd = new BranchAndBound(args[0]);
-            else 
-                brchAndBnd = new BranchAndBound(4);
-            
-            brchAndBnd.Solve();
-            for (int i = 0; i < brchAndBnd.pOpt.Length; i++)
+            if (args.Length == 0) // if no arguments were provided
             {
-                Console.WriteLine($"Вершина {i}: {brchAndBnd.pOpt[i]}");
+                Console.WriteLine("Provide a path to a file to read the matrix as an argument to run the program! \n");
+                return;
             }
-            Console.WriteLine($"Расстояние: {brchAndBnd.sMin}");
+
+            if (args.Length == 1 && args[0] == "testing")
+            {
+                Testing testing = new Testing();
+                testing.TestRandomGenerate(4);
+                testing.Test2();
+                Console.WriteLine("Looks like every test ran well!\n");
+                return;
+            }
+
+            BranchAndBound brchAndBnd = new BranchAndBound(args[0]);
+            brchAndBnd.PrintMatrix();
+            brchAndBnd.Solve();
+            brchAndBnd.PrintResults();
         }
     }
 }
