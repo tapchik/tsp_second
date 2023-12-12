@@ -3,7 +3,7 @@ using System.IO;
 
 class Node
 {
-    Node parent;
+    public Node parent;
     public int n; // is used to generate matrix n by n
     public int s0;
     public int s;
@@ -26,7 +26,7 @@ class Node
         this.matrix = PriceUpMainDiagonal(this.matrix);
         this.startP = GenerateAscendingArray(this.n);
         this.endP = GenerateAscendingArray(this.n);
-        this.p = new int[this.n];
+        this.p = GeneratePathArray(this.n);
     }
 
     public Node(string filePath)
@@ -38,7 +38,7 @@ class Node
         this.s0 = 0;
         this.startP = GenerateAscendingArray(this.n);
         this.endP = GenerateAscendingArray(this.n);
-        this.p = new int[this.n];
+        this.p = GeneratePathArray(this.n);
     }
 
     public Node(int n, Node parent)
@@ -94,6 +94,16 @@ class Node
             array[i] = i;
         }
         return array;
+    }
+
+    static private int[] GeneratePathArray(int n)
+    {
+        int[] pathArray = new int[n];
+        for (int i = 0; i < n; i++)
+        {
+            pathArray[i] = -1;
+        }
+        return pathArray;
     }
 
     public void PrintMatrix()
