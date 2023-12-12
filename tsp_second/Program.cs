@@ -17,7 +17,7 @@ namespace tsp_second
             if (args.Length == 1 && args[0] == "test-rand")
             {
                 Testing testing = new Testing();
-                testing.TestRandomGenerate(4);
+                testing.TestRandomGenerate(16);
                 return;
             }
 

@@ -3,7 +3,7 @@ using System.IO;
 
 class Node
 {
-    public Node parent;
+    public Node next;
     public int n; // is used to generate matrix n by n
     public int s0;
     public int s;
@@ -18,7 +18,7 @@ class Node
 
     public Node(int n0)
     {
-        this.parent = null;
+        this.next = null;
         this.n = n0;
         this.s = 0;
         this.s0 = 0;
@@ -31,8 +31,9 @@ class Node
 
     public Node(string filePath)
     {
-        this.parent = null;
+        this.next = null;
         this.matrix = ReadMatrixFromFile(filePath);
+        this.matrix = PriceUpMainDiagonal(this.matrix);
         this.n = this.matrix.GetLength(0);
         this.s = 0;
         this.s0 = 0;
@@ -41,9 +42,9 @@ class Node
         this.p = GeneratePathArray(this.n);
     }
 
-    public Node(int n, Node parent)
+    public Node(int n, Node next)
     {
-        this.parent = parent;
+        this.next = next;
         this.n = n;
     }
 

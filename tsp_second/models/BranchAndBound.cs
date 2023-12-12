@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 class BranchAndBound
 {
@@ -55,18 +56,17 @@ class BranchAndBound
             {
                 Tuple<int, int> bestBranch = ChooseBestBranch(firstNode.matrix, firstNode.secondMinRows, firstNode.secondMinColumns, firstNode.n);
                 Tuple<int,int> bestBranchPositions = new Tuple<int, int>(firstNode.startP[bestBranch.Item1], firstNode.endP[bestBranch.Item2]);
-                Console.WriteLine(bestBranchPositions.Item1 + " " + bestBranchPositions.Item2);
                 if (firstNode.n == 2)
                 {
                     Tuple<int, int> secondBranch = ChooseSecondBranch(firstNode.matrix, firstNode.n, bestBranch);
                     secondBranch = new Tuple<int, int>(firstNode.startP[secondBranch.Item1], firstNode.endP[secondBranch.Item2]);
-                    FindPath(this.n0, firstNode.p, bestBranchPositions, secondBranch, ref this.pOpt);
+                    FillOptimalPathArray(firstNode.p, bestBranchPositions, secondBranch, ref this.pOpt);
                     this.sMin = firstNode.s0;
-                    firstNode = firstNode.parent;
+                    firstNode = firstNode.next;
                 }
                 else
                 {
-                    Tuple <int,int> forbiddenBranch = ChooseForbiddenBranch(firstNode.startP, firstNode.endP, firstNode.p, this.n0, bestBranchPositions);
+                    Tuple <int,int> forbiddenBranch = ChooseForbiddenBranch(firstNode.startP, firstNode.endP, firstNode.p, this.n0, bestBranchPositions);                    
                     firstNode.matrix[forbiddenBranch.Item1, forbiddenBranch.Item2] = int.MaxValue;
                     firstNode.s += (firstNode.secondMinRows[bestBranch.Item1] > firstNode.secondMinColumns[bestBranch.Item2]) ? firstNode.secondMinRows[bestBranch.Item1] : firstNode.secondMinColumns[bestBranch.Item2];
                     Node newNode = new Node(firstNode.n - 1, firstNode);
@@ -81,7 +81,7 @@ class BranchAndBound
             }
             else
             {
-                firstNode = firstNode.parent;
+                firstNode = firstNode.next;
             }
         }
     }
@@ -99,15 +99,8 @@ class BranchAndBound
             {
                 if (p[i1] != -1)
                 {
-                    if (path.Count == 0)
-                    {
-                        path.Add(new Tuple<int, int>(i1, p[i1]));
-                        i1 = p[i1];
-                    }
-                    else
-                    {
-                        path.Add(new Tuple<int, int>(i1, p[i1]));
-                    }
+                    path.Add(new Tuple<int, int>(i1, p[i1]));
+                    i1 = p[i1];
                 }
                 else
                 {
@@ -117,7 +110,11 @@ class BranchAndBound
             }
             if (path.Count > bestPath.Count)
             {
-                bestPath = new List<Tuple<int, int>>(path);
+                bestPath = new List<Tuple<int, int>> { };
+                foreach (Tuple<int, int> item in path)
+                {
+                    bestPath.Add(item);
+                }
             }
             path = new List<Tuple<int, int>> { };
         }
@@ -133,8 +130,8 @@ class BranchAndBound
         int[] endPCopy = new int[endP.Length];
         startP.CopyTo(startPCopy, 0);
         endP.CopyTo(endPCopy, 0);
-        int left = bestPath[0].Item1;
-        int right = bestPath[bestPath.Count - 1].Item2;
+        int left = bestPath[bestPath.Count - 1].Item2;
+        int right = bestPath[0].Item1;
         for (int i = 0; i < startPCopy.Length; i++)
         {
             if (startPCopy[i] == bestPath[bestPath.Count - 1].Item2)
@@ -237,9 +234,9 @@ class BranchAndBound
         return secondBranch;
     }
 
-    private void FindPath(int n0, int[] p, Tuple<int,int> bestBranch, Tuple<int, int> secondBranch, ref int [] pOpt)
+    private void FillOptimalPathArray(int[] p, Tuple<int,int> bestBranch, Tuple<int, int> secondBranch, ref int [] pOpt)
     {
-        for (int i = 0; i < n0; i++)
+        for (int i = 0; i < pOpt.Length; i++)
         {
             pOpt[i] = p[i];
         }
